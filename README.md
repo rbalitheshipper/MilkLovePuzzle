@@ -1,4 +1,4 @@
-# Jigsaw Puzzle
+# MilkLovePuzzle
 
 A browser-based jigsaw game built with HTML, CSS, Canvas, and vanilla JavaScript.
 

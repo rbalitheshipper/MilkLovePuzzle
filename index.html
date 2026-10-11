@@ -1,18 +1,20 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10213d">
-  <title>Jigsaw Puzzle</title>
+  <meta name="theme-color" content="#0a1f17">
+  <title>MilkLovePuzzle</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <main class="app">
     <header class="topbar">
       <div>
-        <p class="eyebrow">A LITTLE PATIENCE GOES A LONG WAY</p>
-        <h1>Jigsaw Puzzle</h1>
+        <p class="eyebrow">A LITTLE FUN FOR THE MUVMUVS</p>
+        <h1>MilkLovePuzzle</h1>
         <p class="subtitle">Piece by piece, rebuild the picture.</p>
       </div>
       <div class="stats">
@@ -46,7 +48,10 @@
     <section class="game-layout">
       <div class="board-panel">
         <div class="panel-heading">
-          <div><h2>Assemble the picture</h2><p>Drag pieces into position. Correct pieces lock in place.</p></div>
+          <div>
+            <h2>Assemble the picture</h2>
+            <p>Drag pieces into position. Correct pieces lock in place.</p>
+          </div>
           <span id="progress" class="progress">0 / 16 placed</span>
         </div>
         <div id="playfield" class="playfield">
@@ -72,10 +77,12 @@
           <li>Drag a piece with your mouse or finger onto the grid.</li>
           <li>When a piece is close to its spot, it snaps in. The timer stops with the last piece.</li>
         </ol>
-        <div class="tip"><strong>Tip</strong><p>Start with the corner and edge pieces: they have a flat side.</p></div>
+        <div class="tip"><strong>Tip</strong>
+          <p>Start with the corner and edge pieces: they have a flat side.</p>
+        </div>
       </aside>
     </section>
-    <footer>Made with HTML, CSS, Canvas, and vanilla JavaScript. No framework required.</footer>
+    <footer>Made by @rbalitheshipper</footer>
   </main>
   <div id="winModal" class="modal" hidden>
     <div class="modal-card">
@@ -88,4 +95,5 @@
   </div>
   <script src="game.js"></script>
 </body>
+
 </html>

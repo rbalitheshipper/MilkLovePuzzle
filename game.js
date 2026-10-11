@@ -158,27 +158,38 @@
   // ---------------- jigsaw cutting ----------------
   // One shared sign per internal edge: +1 tab on one piece, -1 blank on its neighbour.
   function makeEdges() {
-    const rnd = () => (Math.random() < 0.5 ? 1 : -1);
-    const vertical = Array.from({ length: size }, () => Array.from({ length: size - 1 }, rnd));
-    const horizontal = Array.from({ length: size - 1 }, () => Array.from({ length: size }, rnd));
+    const mk = () => ({
+      sign: Math.random() < 0.5 ? 1 : -1,        // +1 tab, -1 blank (for the piece before the edge)
+      off: (Math.random() - 0.5) * 0.16,          // knob shifted along the edge
+      k: 0.9 + Math.random() * 0.2                // knob size
+    });
+    // vertical[r][c]   = edge between piece (r,c) and (r,c+1)
+    // horizontal[r][c] = edge between piece (r,c) and (r+1,c)
+    const vertical = Array.from({ length: size }, () => Array.from({ length: size - 1 }, mk));
+    const horizontal = Array.from({ length: size - 1 }, () => Array.from({ length: size }, mk));
+    const side = (e, flip) => ({ sign: flip ? -e.sign : e.sign, off: e.off, k: e.k });
     return Array.from({ length: size }, (_, r) =>
       Array.from({ length: size }, (_, c) => ({
-        top: r === 0 ? 0 : -horizontal[r - 1][c],
-        right: c === size - 1 ? 0 : vertical[r][c],
-        bottom: r === size - 1 ? 0 : horizontal[r][c],
-        left: c === 0 ? 0 : -vertical[r][c]
+        top: r === 0 ? null : side(horizontal[r - 1][c], true),
+        right: c === size - 1 ? null : side(vertical[r][c], false),
+        bottom: r === size - 1 ? null : side(horizontal[r][c], false),
+        left: c === 0 ? null : side(vertical[r][c - 1], true)
       })));
   }
 
   // Knob profile in units of u (= shorter piece side), centred on the edge.
   // [along, outward]. It is mirror-symmetric, so the tab on one piece and the
   // blank on its neighbour trace exactly the same curve.
-  function addEdge(path, xa, ya, xb, yb, sign, nx, ny, u) {
-    if (!sign) { path.lineTo(xb, yb); return; }
+  function addEdge(path, xa, ya, xb, yb, e, nx, ny, u) {
+    if (!e) { path.lineTo(xb, yb); return; }
+    const { sign, off, k } = e;
     const L = Math.hypot(xb - xa, yb - ya);
     const tx = (xb - xa) / L, ty = (yb - ya) / L;
-    const cx = (xa + xb) / 2, cy = (ya + yb) / 2;
-    const pt = (a, o) => [cx + tx * a * u + nx * sign * o * u, cy + ty * a * u + ny * sign * o * u];
+    // Shift is along the global +x/+y axis, so both neighbours place the knob identically.
+    const sh = (tx + ty) * off * u;
+    const cx = (xa + xb) / 2 + tx * sh, cy = (ya + yb) / 2 + ty * sh;
+    const pt = (a, o) => [cx + tx * a * k * u + nx * sign * o * k * u,
+    cy + ty * a * k * u + ny * sign * o * k * u];
     const line = (a, o) => { const q = pt(a, o); path.lineTo(q[0], q[1]); };
     const curve = (c1, c2, e) => {
       const A = pt(...c1), B = pt(...c2), C = pt(...e);
@@ -206,6 +217,22 @@
     return p;
   }
 
+  let boardSrc = null;
+  function makeBoardSource() {
+    const { bw, bh } = geo;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(bw * dpr);
+    cv.height = Math.round(bh * dpr);
+    // Centre-crop the source to 4:3 in case a photo isn't exactly that ratio.
+    const iw = img.naturalWidth, ih = img.naturalHeight, ar = iw / ih;
+    let sx = 0, sy = 0, sw = iw, sh = ih;
+    if (ar > 4 / 3) { sw = ih * 4 / 3; sx = (iw - sw) / 2; }
+    else if (ar < 4 / 3) { sh = iw * 3 / 4; sy = (ih - sh) / 2; }
+    cv.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, cv.width, cv.height);
+    return cv;
+  }
+
   function makePiece(r, c) {
     const { w, h, u, pad, bw, bh, bx, by } = geo;
     const cw = w + pad * 2, ch = h + pad * 2;
@@ -221,25 +248,31 @@
 
     const path = buildPath(w, h, pad, edges[r][c], u);
 
-    // Centre-crop the source to 4:3 in case a photo isn't exactly that ratio.
-    const iw = img.naturalWidth, ih = img.naturalHeight, ar = iw / ih;
-    let sx = 0, sy = 0, sw = iw, sh = ih;
-    if (ar > 4 / 3) { sw = ih * 4 / 3; sx = (iw - sw) / 2; }
-    else if (ar < 4 / 3) { sh = iw * 3 / 4; sy = (ih - sh) / 2; }
+    // Pattern = the whole picture at board scale, offset so this piece shows its own area.
+    const pat = ctx.createPattern(boardSrc, "no-repeat");
+    pat.setTransform(new DOMMatrix()
+      .translate(pad - c * w, pad - r * h)
+      .scale(bw / boardSrc.width, bh / boardSrc.height));
+    ctx.fillStyle = pat;
+    ctx.fill(path);
+    // Stroking with the same pattern bleeds the piece ~0.8px outward, so locked
+    // neighbours overlap slightly and no hairline gaps show between them.
+    ctx.strokeStyle = pat;
+    ctx.lineWidth = 1.6;
+    ctx.lineJoin = "round";
+    ctx.stroke(path);
 
     ctx.save();
     ctx.clip(path);
-    // Whole picture drawn at board scale, offset so this piece shows its own area.
-    ctx.drawImage(img, sx, sy, sw, sh, pad - c * w, pad - r * h, bw, bh);
     const shade = ctx.createLinearGradient(0, pad, 0, pad + h);
-    shade.addColorStop(0, "rgba(255,255,255,.07)");
-    shade.addColorStop(1, "rgba(0,0,0,.10)");
+    shade.addColorStop(0, "rgba(255,255,255,.06)");
+    shade.addColorStop(1, "rgba(0,0,0,.09)");
     ctx.fillStyle = shade;
     ctx.fillRect(0, 0, cw, ch);
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(255,255,255,.5)";
-    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = "rgba(255,255,255,.3)";
+    ctx.lineWidth = 1;
     ctx.stroke(path);
 
     return {
@@ -286,6 +319,7 @@
     piecesLayer.innerHTML = "";
     pieces = [];
     zTop = 10;
+    boardSrc = makeBoardSource();
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
         const p = makePiece(r, c);
