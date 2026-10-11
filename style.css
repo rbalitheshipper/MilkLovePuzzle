@@ -2,15 +2,16 @@
 
 :root {
   color-scheme: dark;
-  --bg: #0a1f17;
-  --panel: #0f2a1d;
-  --panel2: #143a28;
-  --line: #2c4d3c;
+  --bg: #130e19;
+  --panel: #1a1323;
+  --panel2: #231a2e;
+  --line: #3a2c46;
   --text: #fff4f8;
-  --muted: #b8d4c5;
-  --blue: #ff8fc2;
-  --blue2: #e0508f;
-  --green: #8fe8b5
+  --muted: #cdbfd3;
+  --pink: #ff8fc2;
+  --pink2: #e0508f;
+  --green: #6ee7a8;
+  --orange: #ffa94d
 }
 
 * {
@@ -23,7 +24,12 @@
 
 body {
   margin: 0;
-  background: radial-gradient(ellipse at 50% -20%, #3d2a3f 0%, var(--bg) 60%);
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(255, 143, 194, .24), transparent 70%),
+    radial-gradient(ellipse 55% 45% at 100% 8%, rgba(110, 231, 168, .18), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% 115%, rgba(255, 169, 77, .12), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-family: "DM Sans", system-ui, sans-serif;
   min-height: 100vh
@@ -40,7 +46,7 @@ select,
 .upload {
   border: 1px solid var(--line);
   border-radius: 11px;
-  background: #12301f;
+  background: #1f1729;
   color: var(--text);
   padding: 11px 15px
 }
@@ -53,7 +59,7 @@ button {
 button:hover,
 .upload:hover {
   border-color: #ff8fc2;
-  background: #1b3d2b
+  background: #2b2038
 }
 
 button:active {
@@ -109,7 +115,7 @@ h1 {
   padding: 12px 16px;
   border: 1px solid var(--line);
   border-radius: 13px;
-  background: #10281d
+  background: #1a1323
 }
 
 .stat span {
@@ -131,7 +137,7 @@ h1 {
   gap: 10px;
   flex-wrap: wrap;
   padding: 14px;
-  background: rgba(15, 40, 29, .88);
+  background: rgba(26, 19, 35, .88);
   border: 1px solid var(--line);
   border-radius: 16px;
   margin-bottom: 18px
@@ -162,7 +168,8 @@ h1 {
 }
 
 .secondary {
-  background: #12291f
+  background: #15241f;
+  border-color: rgba(110, 231, 168, .45)
 }
 
 .upload {
@@ -186,7 +193,7 @@ h1 {
 
 .board-panel,
 .side-panel {
-  background: rgba(15, 40, 29, .9);
+  background: rgba(26, 19, 35, .9);
   border: 1px solid var(--line);
   border-radius: 17px;
   overflow: hidden
@@ -216,7 +223,7 @@ h1 {
   font-size: .78rem;
   color: var(--green);
   white-space: nowrap;
-  background: #17402c;
+  background: rgba(110, 231, 168, .16);
   padding: 7px 10px;
   border-radius: 99px
 }
@@ -226,9 +233,9 @@ h1 {
   min-height: 560px;
   height: min(72vh, 760px);
   overflow: hidden;
-  background: radial-gradient(ellipse at center, #17382a, #0a1d14 72%);
-  border-top: 1px solid #26473a;
-  border-bottom: 1px solid #26473a;
+  background: radial-gradient(ellipse 60% 70% at 12% 18%, rgba(255, 143, 194, .15), transparent 70%), radial-gradient(ellipse 60% 70% at 88% 85%, rgba(110, 231, 168, .15), transparent 70%), #130e19;
+  border-top: 1px solid #34283f;
+  border-bottom: 1px solid #34283f;
   touch-action: none;
   user-select: none
 }
@@ -236,10 +243,10 @@ h1 {
 /* The board is an empty grid: no picture is shown underneath. Size/position are set in JS. */
 .board {
   position: absolute;
-  background-color: rgba(6, 22, 15, .55);
+  background-color: rgba(12, 8, 18, .55);
   background-image: linear-gradient(to right, rgba(255, 170, 205, .2) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 170, 205, .2) 1px, transparent 1px);
   background-size: calc(100% / var(--cols, 4)) calc(100% / var(--rows, 4));
-  outline: 1px solid rgba(255, 160, 200, .55);
+  outline: 1px solid rgba(110, 231, 168, .6);
   box-shadow: 0 12px 34px #0007
 }
 
@@ -291,7 +298,7 @@ h1 {
   gap: 14px;
   padding: 16px;
   text-align: center;
-  background: radial-gradient(ellipse at center, #17382a, #0a1d14 72%)
+  background: radial-gradient(ellipse 60% 70% at 12% 18%, rgba(255, 143, 194, .15), transparent 70%), radial-gradient(ellipse 60% 70% at 88% 85%, rgba(110, 231, 168, .15), transparent 70%), #130e19
 }
 
 .intro-note {
@@ -333,7 +340,7 @@ h1 {
   padding: 5px 0;
   background: transparent;
   border: 0;
-  color: var(--blue);
+  color: var(--pink);
   font-size: .78rem
 }
 
@@ -360,14 +367,14 @@ h1 {
 
 .tip {
   padding: 13px;
-  background: #2a1f2c;
-  border: 1px solid #5a3a55;
+  background: #2a2016;
+  border: 1px solid #6b4a1f;
   border-radius: 12px;
   margin-top: 22px
 }
 
 .tip strong {
-  color: var(--blue);
+  color: var(--orange);
   font-size: .82rem
 }
 
@@ -379,7 +386,7 @@ h1 {
 }
 
 footer {
-  color: #7fa090;
+  color: #8c7d94;
   font-size: .75rem;
   text-align: center;
   padding: 22px 0 5px
@@ -391,7 +398,7 @@ footer {
   z-index: 5000;
   display: grid;
   place-items: center;
-  background: #04120cd9;
+  background: #0f0a14d9;
   padding: 20px
 }
 
@@ -399,8 +406,8 @@ footer {
   width: min(420px, 100%);
   text-align: center;
   padding: 36px 26px;
-  background: #12301f;
-  border: 1px solid #4f7a62;
+  background: #1d1626;
+  border: 1px solid #7a4a70;
   border-radius: 22px;
   box-shadow: 0 24px 90px #0009
 }
@@ -411,8 +418,8 @@ footer {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #1f5a3d;
-  color: var(--green);
+  background: #3b2a12;
+  color: var(--orange);
   font-size: 1.8rem;
   margin: 0 auto 20px
 }
@@ -545,3 +552,12 @@ footer {
 .t-puzzle {
   color: #ffa94d
 }
+
+/* Three-colour accents: green = Milk, pink = Love, orange = mascot */
+.stat:nth-child(1) { border-color: rgba(110, 231, 168, .5) }
+.stat:nth-child(2) { border-color: rgba(255, 143, 194, .5) }
+.stat:nth-child(3) { border-color: rgba(255, 169, 77, .5) }
+#best { color: var(--orange) }
+.side-panel li::marker { color: var(--pink) }
+.board-panel, .side-panel { border-top: 2px solid var(--pink) }
+.side-panel { border-top-color: var(--green) }
