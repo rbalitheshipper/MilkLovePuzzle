@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10213d">
+  <title>Jigsaw Puzzle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">A LITTLE PATIENCE GOES A LONG WAY</p>
+        <h1>Jigsaw Puzzle</h1>
+        <p class="subtitle">Piece by piece, rebuild the picture.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>TIME</span><strong id="timer">00:00</strong></div>
+        <div class="stat"><span>MOVES</span><strong id="moves">0</strong></div>
+        <div class="stat"><span>BEST</span><strong id="best">--:--</strong></div>
+      </div>
+    </header>
+
+    <section class="toolbar" aria-label="Puzzle controls">
+      <label class="control">
+        <span>Picture</span>
+        <select id="picture"></select>
+      </label>
+      <label class="control">
+        <span>Difficulty</span>
+        <select id="difficulty">
+          <option value="3">3 × 3 · 9 pieces</option>
+          <option value="4" selected>4 × 4 · 16 pieces</option>
+          <option value="5">5 × 5 · 25 pieces</option>
+          <option value="6">6 × 6 · 36 pieces</option>
+        </select>
+      </label>
+      <button id="newGame" class="primary">New puzzle</button>
+      <label class="upload secondary">
+        Upload photo
+        <input id="upload" type="file" accept="image/*">
+      </label>
+    </section>
+
+    <section class="game-layout">
+      <div class="board-panel">
+        <div class="panel-heading">
+          <div><h2>Assemble the picture</h2><p>Drag pieces into position. Correct pieces lock in place.</p></div>
+          <span id="progress" class="progress">0 / 16 placed</span>
+        </div>
+        <div id="playfield" class="playfield">
+          <div id="board" class="board" aria-label="Jigsaw board"></div>
+          <div id="pieces" class="pieces" aria-label="Loose jigsaw pieces"></div>
+          <div id="emptyMessage" class="empty-message">Loading picture…</div>
+          <div id="intro" class="intro" hidden>
+            <p class="intro-note">This is the finished picture. It won't be shown again once you start.</p>
+            <img id="introImage" alt="The finished picture">
+            <button id="startBtn" class="primary">Start puzzle and timer</button>
+          </div>
+        </div>
+        <div class="bottomline">
+          <span id="message" role="status">Choose a picture and start playing.</span>
+          <button id="shuffle" class="text-button">Scatter pieces again</button>
+        </div>
+      </div>
+      <aside class="side-panel">
+        <h2>How to play</h2>
+        <ol>
+          <li>Choose a picture and difficulty.</li>
+          <li>Study the finished picture, then press Start. The timer begins.</li>
+          <li>Drag a piece with your mouse or finger onto the grid.</li>
+          <li>When a piece is close to its spot, it snaps in. The timer stops with the last piece.</li>
+        </ol>
+        <div class="tip"><strong>Tip</strong><p>Start with the corner and edge pieces: they have a flat side.</p></div>
+      </aside>
+    </section>
+    <footer>Made with HTML, CSS, Canvas, and vanilla JavaScript. No framework required.</footer>
+  </main>
+  <div id="winModal" class="modal" hidden>
+    <div class="modal-card">
+      <div class="win-mark">✓</div>
+      <p class="eyebrow">PUZZLE COMPLETE</p>
+      <h2>Beautifully done.</h2>
+      <p id="winSummary">You completed the puzzle.</p>
+      <button id="playAgain" class="primary">Play again</button>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
